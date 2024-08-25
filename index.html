@@ -10,7 +10,7 @@
     </head>
     <body>
         <script>
-            const fpPromise = import('/frontend/script.js')
+            const fpPromise = import('./frontend/script.js')
                 .then(FingerprintJS => FingerprintJS.load())
             fpPromise
                 .then(fp => fp.get())
