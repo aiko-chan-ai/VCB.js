@@ -1,0 +1,50 @@
+{
+  "name": "vcb",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "vcbank",
+    "vcb",
+    "bank",
+    "vietcombank"
+  ],
+  "author": "aiko-chan-ai",
+  "type": "module",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.0",
+    "@types/node-forge": "^1.3.11",
+    "@types/tough-cookie": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^8.2.0",
+    "esbuild-plugin-version-injector": "^1.2.1",
+    "eslint-plugin-path-alias": "^2.1.0",
+    "eslint-plugin-simple-header": "^1.0.2",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.0.0",
+    "tsup": "8.1.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "axios": "^1.7.3",
+    "axios-cookiejar-support": "^5.0.2",
+    "crc": "^4.3.2",
+    "jsdom": "^24.1.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "node-forge": "^1.3.1",
+    "tough-cookie": "^4.1.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "installDeps": "npm install --production",
+    "lint": "npx eslint .",
+    "format": "npx eslint . --fix"
+  }
+}

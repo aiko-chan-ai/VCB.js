@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Browser ID from VCB</title>
+        <style>
+            body {
+                padding: 50px;
+                font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            const fpPromise = import('/frontend/script.js')
+                .then(FingerprintJS => FingerprintJS.load())
+            fpPromise
+                .then(fp => fp.get())
+                .then(result => {
+                    console.log(result.visitorId);
+                    document.getElementById("browserId").textContent = result.visitorId;
+                })
+        </script>
+        <div>
+            <h1 id="browserId">Please wait...</h1>
+        </div>
+    </body>
+</html>
