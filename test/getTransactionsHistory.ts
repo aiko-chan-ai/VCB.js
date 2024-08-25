@@ -29,7 +29,7 @@ import { VCBRestClient } from '../index.js';
 
 // BrowserID là md5 của fingerprintJS (visitorId)
 // Nếu có browserId thì sẽ không cần xác thực OTP
-// Vào trang web này để lấy browserId
+// Vào trang web https://aiko-chan-ai.github.io/VCB.js/ để lấy browserId
 const client = new VCBRestClient('<browserId của bạn>');
 
 await client.init();

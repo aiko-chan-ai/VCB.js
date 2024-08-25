@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-export const WEB = 'này';
+export const WEB = 'https://aiko-chan-ai.github.io/VCB.js/';
 
 export const Endpoints = {
 	LOGIN: {

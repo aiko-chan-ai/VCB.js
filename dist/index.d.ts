@@ -350,7 +350,7 @@ declare class VCBRestClient {
     private handlerAxiosRequest;
 }
 
-declare const WEB = "n\u00E0y";
+declare const WEB = "https://aiko-chan-ai.github.io/VCB.js/";
 declare const Endpoints: {
     LOGIN: {
         prePoint: string;

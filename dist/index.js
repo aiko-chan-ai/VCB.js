@@ -2,17 +2,47 @@ var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
 // src/Client.ts
+import { createHash as createHash2, randomUUID } from "node:crypto";
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
-import { CookieJar } from "tough-cookie";
 import * as crc from "crc";
 import moment from "moment";
-import { createHash as createHash2, randomUUID } from "node:crypto";
+import { CookieJar } from "tough-cookie";
+
+// src/Constants.ts
+var WEB = "https://aiko-chan-ai.github.io/VCB.js/";
+var Endpoints = {
+  LOGIN: {
+    prePoint: "/authen-service",
+    endPoint: "/v1/login",
+    mid: 6
+  },
+  ACCOUNT_DETAIL: {
+    prePoint: "/bank-service",
+    endPoint: "/v2/get-account-detail",
+    mid: 13
+  },
+  GET_LIST_ACCOUNT_VIA_CIF: {
+    prePoint: "/bank-service",
+    endPoint: "/v2/get-list-account-via-cif",
+    mid: 8
+  },
+  TRANSACTION_HISTORY: {
+    prePoint: "/bank-service",
+    endPoint: "/v1/transaction-history",
+    mid: 14
+  },
+  EXPORT_HIS_STATEMENT_ACCOUNT_EXCEL: {
+    prePoint: "/utility-service",
+    endPoint: "/v1/export-his-statement-account-excel",
+    mid: "export_account_excel"
+  }
+};
 
 // src/Crypto.ts
+import { Buffer as Buffer2 } from "node:buffer";
 import { randomBytes as randomBytes2 } from "crypto";
 import forge from "node-forge";
-import { Buffer as Buffer2 } from "node:buffer";
 
 // src/Util.ts
 import { createHash, randomBytes } from "crypto";
@@ -32,9 +62,11 @@ var Util = class {
         const dom = new JSDOM(text);
         const scriptTags = dom.window.document.querySelectorAll("script");
         const regex = /main\.\w+\.js(\?v=[\w\.]+)?/i;
-        for (let script of scriptTags) {
+        for (const script of scriptTags) {
           if (script.src && regex.test(script.src)) {
-            return r("https://vcbdigibank.vietcombank.com.vn/" + script.src);
+            return r(
+              "https://vcbdigibank.vietcombank.com.vn/" + script.src
+            );
           }
         }
         return r(null);
@@ -293,36 +325,6 @@ var ErrorCode = /* @__PURE__ */ ((ErrorCode2) => {
   return ErrorCode2;
 })(ErrorCode || {});
 
-// src/Constants.ts
-var WEB = "n\xE0y";
-var Endpoints = {
-  LOGIN: {
-    prePoint: "/authen-service",
-    endPoint: "/v1/login",
-    mid: 6
-  },
-  ACCOUNT_DETAIL: {
-    prePoint: "/bank-service",
-    endPoint: "/v2/get-account-detail",
-    mid: 13
-  },
-  GET_LIST_ACCOUNT_VIA_CIF: {
-    prePoint: "/bank-service",
-    endPoint: "/v2/get-list-account-via-cif",
-    mid: 8
-  },
-  TRANSACTION_HISTORY: {
-    prePoint: "/bank-service",
-    endPoint: "/v1/transaction-history",
-    mid: 14
-  },
-  EXPORT_HIS_STATEMENT_ACCOUNT_EXCEL: {
-    prePoint: "/utility-service",
-    endPoint: "/v1/export-his-statement-account-excel",
-    mid: "export_account_excel"
-  }
-};
-
 // src/Client.ts
 var VCBRestClient = class {
   static {
@@ -352,9 +354,6 @@ var VCBRestClient = class {
   browserId;
   captchaToken = randomUUID();
   #username = "";
-  #password = "";
-  #ottKey = "";
-  // Chưa thấy dùng làm gì cả
   #cif = "";
   #clientId = "";
   #mobileId = "";
@@ -407,7 +406,6 @@ var VCBRestClient = class {
   login(username, password, captcha) {
     return new Promise((resolve, reject) => {
       this.#username = username;
-      this.#password = password;
       this.postWithEncrypt(
         "https://digiapp.vietcombank.com.vn" + Endpoints.LOGIN.prePoint + Endpoints.LOGIN.endPoint,
         {
@@ -423,7 +421,6 @@ var VCBRestClient = class {
           DT: "Windows",
           PM: "Chrome 127.0.0.0",
           OV: "10",
-          // windows 10 ?
           appVersion: ""
         }
       ).catch(reject).then((res) => {
@@ -468,7 +465,6 @@ new VCBRestClient('<browserId c\xF3 \u0111\u01B0\u1EE3c \u1EDF b\u01B0\u1EDBc tr
               );
             }
             case "00" /* OK */: {
-              this.#ottKey = res.ottKey;
               this.#cif = res.userInfo.cif;
               this.#clientId = res.userInfo.clientId;
               this.#sessionId = res.userInfo.sessionId;
@@ -509,16 +505,14 @@ new VCBRestClient('<browserId c\xF3 \u0111\u01B0\u1EE3c \u1EDF b\u01B0\u1EDBc tr
       ).catch(reject).then((res) => {
         if (!res) {
           reject(new Error("INVALID_RESPONSE"));
+        } else if (res.code !== "00" /* OK */) {
+          reject(
+            new Error("INVALID_RESPONSE", {
+              cause: res
+            })
+          );
         } else {
-          if (res.code !== "00" /* OK */) {
-            reject(
-              new Error("INVALID_RESPONSE", {
-                cause: res
-              })
-            );
-          } else {
-            resolve(res);
-          }
+          resolve(res);
         }
       });
     });
@@ -547,16 +541,14 @@ new VCBRestClient('<browserId c\xF3 \u0111\u01B0\u1EE3c \u1EDF b\u01B0\u1EDBc tr
       ).catch(reject).then((res) => {
         if (!res) {
           reject(new Error("INVALID_RESPONSE"));
+        } else if (res.code !== "00" /* OK */) {
+          reject(
+            new Error("INVALID_RESPONSE", {
+              cause: res
+            })
+          );
         } else {
-          if (res.code !== "00" /* OK */) {
-            reject(
-              new Error("INVALID_RESPONSE", {
-                cause: res
-              })
-            );
-          } else {
-            resolve(res);
-          }
+          resolve(res);
         }
       });
     });
@@ -597,16 +589,14 @@ new VCBRestClient('<browserId c\xF3 \u0111\u01B0\u1EE3c \u1EDF b\u01B0\u1EDBc tr
         ).catch(reject).then((res) => {
           if (!res) {
             reject(new Error("INVALID_RESPONSE"));
+          } else if (res.code !== "00" /* OK */) {
+            reject(
+              new Error("INVALID_RESPONSE", {
+                cause: res
+              })
+            );
           } else {
-            if (res.code !== "00" /* OK */) {
-              reject(
-                new Error("INVALID_RESPONSE", {
-                  cause: res
-                })
-              );
-            } else {
-              resolve(res);
-            }
+            resolve(res);
           }
         });
       }
